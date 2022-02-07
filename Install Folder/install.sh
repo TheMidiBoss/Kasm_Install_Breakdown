@@ -705,8 +705,8 @@ cp  ${EULA_PATH} ${KASM_INSTALL_BASE}/
 
 
 
-if [ "${ROLE}" == "all" ] ;
-then
+##if [ "${ROLE}" == "all" ] ;
+##then
     echo "Installing All Services"
     cp -r ${KASM_RELEASE}/conf/nginx/upstream_agent.conf ${KASM_INSTALL_BASE}/conf/nginx/upstream_agent.conf
     cp -r ${KASM_RELEASE}/conf/nginx/services.d/agent.conf ${KASM_INSTALL_BASE}/conf/nginx/services.d/agent.conf
@@ -736,80 +736,6 @@ then
     load_service_images
     load_workspace_images
     base_install
-
-elif [ "${ROLE}" == "app" ] ;
-then
-    echo "Installing App Role"
-    cp ${KASM_RELEASE}/docker/docker-compose-app.yaml ${KASM_INSTALL_BASE}/docker/docker-compose.yaml
-    copy_manager_configs
-    get_database_hostname
-    set_database_hostname
-    get_database_password
-    set_database_password
-    set_database_ssl
-    get_redis_password
-    set_redis_password
-    set_redis_hostname
-    set_api_hostname
-    set_api_server_id
-    set_share_id
-    set_server_zone
-    set_manager_id
-    set_listening_port
-    create_docker_network
-    DO_DATABASE_INIT='false'
-    load_service_images
-    base_install
-
-elif [ "${ROLE}" == "agent" ] ;
-then
-    echo "Installing Agent Role"
-    cp -r ${KASM_RELEASE}/conf/nginx/upstream_agent.conf ${KASM_INSTALL_BASE}/conf/nginx/upstream_agent.conf
-    cp -r ${KASM_RELEASE}/conf/nginx/services.d/agent.conf ${KASM_INSTALL_BASE}/conf/nginx/services.d/agent.conf
-    cp ${KASM_RELEASE}/docker/docker-compose-agent.yaml ${KASM_INSTALL_BASE}/docker/docker-compose.yaml
-    get_manager_hostname
-    set_manager_hostname
-    get_public_hostname
-    set_public_hostname
-    get_manager_token
-    set_manager_token
-    set_agent_server_id
-    set_provider
-    set_listening_port
-    create_docker_network
-    DO_DATABASE_INIT='false'
-    load_service_images
-    load_workspace_images
-
-elif [ "${ROLE}" == "db" ] ;
-then
-    echo "Installing Database Role"
-    if [ "${DATABASE_HOSTNAME}" == 'false' ] && [ "${REDIS_HOSTNAME}" == 'false' ]; then
-    	cp ${KASM_RELEASE}/docker/docker-compose-db-redis.yaml ${KASM_INSTALL_BASE}/docker/docker-compose.yaml
-    elif [ "${DATABASE_HOSTNAME}" == 'false' ]; then
-    	cp ${KASM_RELEASE}/docker/docker-compose-db.yaml ${KASM_INSTALL_BASE}/docker/docker-compose.yaml
-    elif [ "${REDIS_HOSTNAME}" == 'false' ]; then
-    	cp ${KASM_RELEASE}/docker/docker-compose-redis.yaml ${KASM_INSTALL_BASE}/docker/docker-compose.yaml
-	fi
-    copy_db_config
-    create_docker_network
-    set_random_database_password
-    set_database_password
-    set_database_hostname
-    set_database_port
-    set_database_ssl
-    set_redis_hostname
-    set_random_redis_password
-    set_redis_password
-    set_listening_port
-    set_random_manager_token
-    set_manager_token
-    load_service_images
-    base_install
-
-else
-    exit -1
-fi
 
 
 chmod +x ${KASM_INSTALL_BASE}/bin/*
