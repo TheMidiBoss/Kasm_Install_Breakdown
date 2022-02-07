@@ -75,29 +75,6 @@ function install_docker_compose (){
    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 }
 
-function install_centos (){
-    echo "CentOS 7.x/8.x Install"
-    echo "Installing Base CentOS Packages"
-
-    NO_BEST=""
-    if [ "${1}" == '"8"' ] ; then
-        NO_BEST="--nobest"
-    fi
-
-    yum install -y yum-utils \
-        device-mapper-persistent-data \
-        lvm2 \
-        lsof
-
-    sudo yum-config-manager \
-        --add-repo \
-        https://download.docker.com/linux/centos/docker-ce.repo
-
-    echo "Installing Docker-CE"
-    yum install -y docker-ce $NO_BEST
-    systemctl start docker
-}
-
 
 function install_ubuntu (){
     echo "Ubuntu 16.04/18.04/20.04 Install"
@@ -121,53 +98,6 @@ function install_ubuntu (){
     fi
 }
 
-function install_debian (){
-    echo "Debian 9.x/10.x/11.x Install"
-    echo "Installing Base Debian Packages"
-    apt-get update
-    sudo apt-get install -y \
-         apt-transport-https \
-         ca-certificates \
-         curl \
-         gnupg2 \
-         software-properties-common
-
-    if dpkg -s docker-ce | grep Status: | grep installed ; then
-      echo "Docker Installed"
-    else
-      echo "Installing Docker-CE"
-
-      curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-      add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-      apt-get update
-      apt-get -y install docker-ce
-    fi
-}
-
-function install_oracle (){
-    echo "Oracle Linux 7.x/8.x Install"
-    echo "Installing Base Oracle Linux Packages"
-
-    NO_BEST=""
-    if [[ "${1}" == '"8.'* ]] ; then
-        NO_BEST="--nobest"
-    else
-        sudo yum-config-manager --enable ol7_developer
-    fi
-
-    yum install -y yum-utils \
-        device-mapper-persistent-data \
-        lvm2 \
-        lsof
-
-    sudo yum-config-manager \
-        --add-repo \
-        https://download.docker.com/linux/centos/docker-ce.repo
-
-    echo "Installing Docker-CE"
-    yum install -y docker-ce $NO_BEST
-    systemctl start docker
-}
 
 check_docker_dependencies
 
